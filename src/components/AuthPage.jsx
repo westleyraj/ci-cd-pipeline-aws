@@ -77,9 +77,6 @@ const AuthPage = ({ onLogin }) => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Nikefit</h1>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {isSignUp ? 'Create Your Nike Account' : 'Sign In to Nike'}
-          </h2>
           <p className="text-gray-600">
             {isSignUp 
               ? 'Join the Nike community and unlock exclusive benefits' 

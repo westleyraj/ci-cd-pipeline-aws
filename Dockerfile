@@ -1,20 +1,32 @@
-# Step 1: Build React App
-FROM node:16 as build
+# Stage 1: Build React app
+FROM node:18-alpine AS builder
+
 WORKDIR /app
+COPY package*.json ./
+RUN npm install
 COPY . .
-RUN npm install && npm run build
+RUN npm run build
 
-# Step 2: Serve with Nginx
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
+# Stage 2: Serve it with Nginx
+FROM nginx:stable-alpine
 
-# Step 3: Inject Nginx config directly
+# Remove default nginx static files
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy built app from builder stage
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Inject custom nginx config directly (fixes React 404 on refresh)
 RUN echo 'server {\n\
-  listen 80;\n\
-  server_name localhost;\n\
-  root /usr/share/nginx/html;\n\
-  index index.html;\n\
-  location / {\n\
-    try_files $uri /index.html;\n\
-  }\n\
+    listen 80;\n\
+    server_name localhost;\n\
+    root /usr/share/nginx/html;\n\
+    index index.html index.htm;\n\
+\n\
+    location / {\n\
+        try_files $uri /index.html;\n\
+    }\n\
 }' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

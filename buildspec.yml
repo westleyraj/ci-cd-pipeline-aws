@@ -28,4 +28,6 @@ phases:
 
 artifacts:
   files:
-    - imagedefinitions.json
+    - '**/*'                        
+    - imagedefinitions.json       
+  discard-paths: no   

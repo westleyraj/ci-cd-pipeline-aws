@@ -117,7 +117,7 @@ const Header = ({
                   : 'text-gray-900 hover:text-gray-700'
               }`}
             >
-              Sale
+              offer
             </Link>
           </nav>
 

@@ -40,7 +40,7 @@ const HeroSection = ({ onShopNow }) => {
                 <div className="relative">
                   <img
                     className="w-full h-96 object-cover rounded-lg shadow-xl"
-                    src="https://nike-website-demo.s3.eu-north-1.amazonaws.com/nike-shoe.jpg"
+                    src="https://media.istockphoto.com/id/1303978937/photo/white-sneaker-on-a-blue-gradient-background-mens-fashion-sport-shoe-sneakers-lifestyle.jpg?s=612x612&w=0&k=20&c=L725fuzFTnm6qEaqE7Urc5q6IR80EgYQEjBn_qtBIQg="
                     alt="Nike Shoes"
                   />
                 </div>

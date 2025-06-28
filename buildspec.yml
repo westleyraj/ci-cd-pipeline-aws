@@ -3,23 +3,29 @@ version: 0.2
 env:
   variables:
     IMAGE_TAG: latest
-    ECR_REPO: nike-frontend
+    ECR_REPO: ci-cd-pipeline
+    AWS_ACCOUNT_ID: 727646511981
+    AWS_DEFAULT_REGION: eu-north-1
 
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
   build:
     commands:
       - echo Building Docker image...
       - docker build -t $ECR_REPO:$IMAGE_TAG .
-      - docker tag $ECR_REPO:$IMAGE_TAG <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+      - docker tag $ECR_REPO:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+
   post_build:
     commands:
-      - echo Pushing image to ECR...
-      - docker push <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
-      - echo Writing image definitions...
-      - printf '[{"name":"nike-frontend","imageUri":"%s"}]' <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG > imagedefinitions.json
+      - echo Pushing Docker image to ECR...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+      - echo Creating imagedefinitions.json for ECS deployment...
+      - printf '[{"name":"docker-ci-cd-pipeline","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG > imagedefinitions.json
+
 artifacts:
-  files: imagedefinitions.json
+  files:
+    - imagedefinitions.json
